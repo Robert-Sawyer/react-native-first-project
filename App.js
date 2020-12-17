@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {StyleSheet, View, Button, TextInput, Text} from 'react-native';
+import {StyleSheet, View, Button, TextInput, Text, ScrollView, FlatList} from 'react-native';
 
 export default function App() {
     //dodaję stan - wprowadzony cel i funkcję któa go ustawia, oraz listę celów, która za pomocą .map będzie
@@ -22,10 +22,10 @@ export default function App() {
     return (
         <View style={styles.screen}>
             <View style={styles.row}>
-                <TextInput
-                    {/*handleGoalInput zostaje wywołany w momencie gdy user zaczyna coś wpisywać, a wartość
+                {/*handleGoalInput zostaje wywołany w momencie gdy user zaczyna coś wpisywać, a wartość
                     w inpucie zostaje pokazana jako bieżący stan enteredGoal, czyli aktualnie wprowadzany
                     tekst*/}
+                <TextInput
                     placeholder="Dodaj nowy cel"
                     style={styles.input}
                     onChangeText={handleGoalInput}
@@ -33,7 +33,10 @@ export default function App() {
                 />
                 <Button title="DODAJ" onPress={handleAddGoal}/>
             </View>
-            <View>
+            {/*zwykłe View nie ma wbudowanej opcji scrollowania, dlatego w przypadku elementów które
+            powinny dać się przewijać wykorzystuję Scrollview - posiada wiele opcji, np. scrollowanie
+            horyzontalne, itp, wszystko w dokumentacji*/}
+            <ScrollView>
                 {/*<Text> ma ograniczoną możliwośc stylowania, więc dlatego opakowuję go w kolejne View,
                 i dodaję key, ponieważ każdy mapowany element musi posiadać klucz*/}
                 {allGoals.map(goal =>
@@ -41,7 +44,7 @@ export default function App() {
                         <Text>{goal}</Text>
                     </View>
                 )}
-            </View>
+            </ScrollView>
         </View>
     );
 }
