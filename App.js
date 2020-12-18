@@ -17,6 +17,13 @@ export default function App() {
         setAllGoals(currentGoals => [...currentGoals, {id: Math.random().toString(), value: goalTitle}])
     }
 
+    //podczas kliknięcia na element listy zostaje on usunięty dzięki filter
+    const handleRemoveGoal = goalId => {
+        setAllGoals(currentGoals => {
+            return currentGoals.filter((goal) => goal.id !== goalId)
+        })
+    }
+
     return (
         <View style={styles.screen}>
             <GoalInput
@@ -33,7 +40,12 @@ export default function App() {
                 keyExtractor={(item, index) => item.id}
                 data={allGoals}
                 renderItem={itemData => (
-                    <GoalItem title={itemData.item.value}/>
+                    //id do GoalItem do handlera przekazuję już w komponencie GoalItem jako props
+                    <GoalItem
+                        id={itemData.item.id}
+                        title={itemData.item.value}
+                        onDelete={handleRemoveGoal}
+                    />
                 )}
             />
         </View>
