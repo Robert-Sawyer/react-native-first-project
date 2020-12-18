@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Button, TextInput, View, StyleSheet} from "react-native";
+import {Button, TextInput, View, Modal, StyleSheet} from "react-native";
 
 const GoalInput = props => {
     const [enteredGoal, setEnteredGoal] = useState('')
@@ -10,31 +10,42 @@ const GoalInput = props => {
         setEnteredGoal(enteredText)
     }
 
+    //dodaję handler w którym pobieram funkcjonalność z komponentu rodzica - App.js, dostarczam w argumencie aktualny
+    //stan enteredGoal i resetuję stan z powrotem na pusty string
+    const handleAddGoal = () => {
+        props.onAddGoal(enteredGoal)
+        setEnteredGoal('')
+    }
+
     return (
-        <View style={styles.row}>
-            {/*handleGoalInput zostaje wywołany w momencie gdy user zaczyna coś wpisywać, a wartość
+        <Modal visible={props.visible} animationType='slide'>
+            <View style={styles.row}>
+                {/*handleGoalInput zostaje wywołany w momencie gdy user zaczyna coś wpisywać, a wartość
                     w inpucie zostaje pokazana jako bieżący stan enteredGoal, czyli aktualnie wprowadzany
                     tekst*/}
-            <TextInput
-                placeholder="Dodaj nowy cel"
-                style={styles.input}
-                onChangeText={handleGoalInput}
-                value={enteredGoal}
-            />
-            {/*używam funkcji bind aby przekazać do handlera w App.js wartośc wprowadzoną w inpucie (enteredGoal) ALE
-            TYLKO WTEDY gdy funkcja zostanie rzeczywiście wykonana (w momencie wciśnięcia buttona)
-            Pierwszyagument dotyczy tego do czego powinno odnosić się słowo kluczowe, a drugi to właściwy argument
-            który ma zostać przekazany do danej funkcji*/}
-            {/*zamiast bind mogę tez użuć zamiennie () => props.addGoal(enteredGoal)*/}
-            <Button title="DODAJ" onPress={props.addGoal.bind(this, enteredGoal)}/>
-        </View>
+                <TextInput
+                    placeholder="Dodaj nowy cel"
+                    style={styles.input}
+                    onChangeText={handleGoalInput}
+                    value={enteredGoal}
+                />
+                <View style={styles.buttonContainer}>
+                    <View style={styles.button}>
+                        <Button title='ANULUJ' onPress={props.onCancel} color='red'/>
+                    </View>
+                    <View style={styles.button}>
+                        <Button title="DODAJ" onPress={handleAddGoal}/>
+                    </View>
+                </View>
+            </View>
+        </Modal>
     )
 }
 
 const styles = StyleSheet.create({
     row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
     },
     input: {
@@ -43,6 +54,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
         margin: 5,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '60%',
+    },
+    button: {
+        width: '40%',
     },
 })
 

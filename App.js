@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, FlatList} from 'react-native';
+import {StyleSheet, View, FlatList, Button} from 'react-native';
 import GoalItem from "./components/GoalItem";
 import GoalInput from "./components/GoalInput";
 
 export default function App() {
     //dodaję stan - listę celów, która za pomocą .map będzie potem wyświetlana pod inputem
     const [allGoals, setAllGoals] = useState([])
+    const [isAddMode, setIsAddMode] = useState(false)
 
     //obsługuję ustawianie celów do tablicy celów - funkcja wewnątrz set... kopiuje poprzednią listę celów,
     //tworzy nową tablicę, wprowadza do niej starą zawartość i dodaje na końcu świeżo wprowadzony cel
@@ -15,6 +16,7 @@ export default function App() {
     //Math.random nie jest dobrym rozwiązaniem bo id/key może się wtedy powtórzyć, ale do potrzeb tego projektu wystarczy
     const handleAddGoal = (goalTitle) => {
         setAllGoals(currentGoals => [...currentGoals, {id: Math.random().toString(), value: goalTitle}])
+        setIsAddMode(false)
     }
 
     //podczas kliknięcia na element listy zostaje on usunięty dzięki filter
@@ -24,10 +26,21 @@ export default function App() {
         })
     }
 
+    const handleAddMode = () => {
+        setIsAddMode(true)
+    }
+
+    const handleCancelGoalAddition = () => {
+        setIsAddMode(false)
+    }
+
     return (
         <View style={styles.screen}>
+            <Button title='Add New Goal' onPress={handleAddMode}/>
             <GoalInput
-                addGoal={handleAddGoal}
+                onAddGoal={handleAddGoal}
+                onCancel={handleCancelGoalAddition}
+                visible={isAddMode}
             />
             {/*flatList jest w celu opakowywania list które mogą być bardzo długie i żeby nie renderowały
             się wszystkie jej elementy, nawet te niewidoczne to wykorzystuję FL - zwiększa wydajnośc aplikacji i jest
